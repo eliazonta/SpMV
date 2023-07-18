@@ -1,5 +1,5 @@
 # SpMV 
-![Build](https://github.com/eliazonta/K-Means/actions/workflows/c-cpp.yml/badge.svg)
+![Build](https://github.com/eliazonta/SpMV/actions/workflows/c-cpp.yml/badge.svg)
 
 Sequential and parallel (GPU based) implementation of a Sparse Matrix Vector Multiplication using (Compressed Sparse Row (CSR) matrix format.
 
