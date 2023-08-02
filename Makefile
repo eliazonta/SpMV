@@ -13,11 +13,6 @@ SRC-CUDA := main.cu
 
 all: sequential cuda
 
-prova:
-	@mkdir -p prova
-	$(NVCC) $(SRC_FOLDER)/$(PARALLEL_FOLDER)/prova.cu
-	@mv a.out prova/prova
-
 
 sequential:
 	@mkdir -p $(BIN_FOLDER)
