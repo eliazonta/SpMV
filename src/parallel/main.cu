@@ -3,6 +3,9 @@
 #include <string.h>
 
 #include "../../include/parser.h"
+#include "../../include/parallel.h"
+#include "../../include/utils.h"
+
 
 int main(int argc, const char * argv[]) {
     fprintf(stdout, "============================\n");
@@ -26,8 +29,10 @@ int main(int argc, const char * argv[]) {
     
     read_matrix(&row_ptr, &col_ind, &values, filename, &num_rows, &num_cols, &num_vals);
     
-    float *x = (float *) malloc(num_rows * sizeof(float));
-    float *y = (float *) malloc(num_rows * sizeof(float));
+    // float *x = (float *) malloc(num_rows * sizeof(float));
+    float *x = malloc_host<float>(num_rows);
+    // float *y = (float *) malloc(num_rows * sizeof(float));
+    float *y = malloc_host<float>(num_rows);
     for (int i = 0; i < num_rows; ++i) {
         x[i] = 1.0;
         y[i] = 0.0;
@@ -73,10 +78,12 @@ int main(int argc, const char * argv[]) {
     cudaDeviceGetAttribute(&numSMs, cudaDevAttrMultiProcessorCount, 0);
     
     // Copy from host to device
+    auto s = get_time();
     cudaMemcpy(d_row_ptr, row_ptr, (num_rows + 1) * sizeof(int), cudaMemcpyHostToDevice);
     cudaMemcpy(d_col_ind, col_ind, num_vals * sizeof(int), cudaMemcpyHostToDevice);
     cudaMemcpy(d_values, values, num_vals * sizeof(float), cudaMemcpyHostToDevice);
-    
+    auto time_H2D = get_time() - s;
+
     // Time the iterations
     float elapsed_time;
     cudaEvent_t start, stop;

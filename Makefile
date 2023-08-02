@@ -1,4 +1,5 @@
 CC := gcc
+NVCC := /usr/local/cuda-12.2/bin/nvcc
 BIN_FOLDER := bin
 SRC_FOLDER := src
 PARALLEL_FOLDER := parallel
@@ -12,14 +13,21 @@ SRC-CUDA := main.cu
 
 all: sequential cuda
 
+prova:
+	@mkdir -p prova
+	$(NVCC) $(SRC_FOLDER)/$(PARALLEL_FOLDER)/prova.cu
+	@mv a.out prova/prova
+
+
 sequential:
 	@mkdir -p $(BIN_FOLDER)
 	$(CC)  $(SRC_FOLDER)/$(SRC-SEQ) $(SRC_FOLDER)/parser.c $(SRC_FOLDER)/sequential.c
 	@mv a.out $(BIN_FOLDER)/$(NN-SEQ)
 
 parallel:
-	/usr/local/cuda-10.0/bin/nvcc $(SRC_FOLDER)/$(PARALLEL_FOLDER)/$(SRC-CUDA) $(SRC_FOLDER)/parser.c $(SRC_FOLDER)/$(PARALLEL_FOLDER)/parallel.cu
+	@mkdir -p $(BIN_FOLDER)
+	$(NVCC) $(SRC_FOLDER)/$(PARALLEL_FOLDER)/$(SRC-CUDA) $(SRC_FOLDER)/parser.c $(SRC_FOLDER)/$(PARALLEL_FOLDER)/parallel.cu
 	@mv a.out $(BIN_FOLDER)/$(NN-CUDA)
 	
 clean:
-	rm -rf $(BIN_FOLDER)
+	rm -rf $(BIN_FOLDER) prova 

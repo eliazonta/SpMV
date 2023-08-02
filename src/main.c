@@ -18,7 +18,7 @@ int main(int argc, char **argv) {
     }
     
     int *row_ptr, *col_ind, num_rows, num_cols, num_vals;
-    float *values, elapsed_time;;
+    float *values, elapsed_time;
     
     int num_repeat = atoi(argv[1]);
     int print_mode = atoi(argv[2]);

@@ -17,3 +17,5 @@ jobs:
       run: make clean
     - name: make sequential
       run: make sequential
+    # - name: make parallel
+      # run: make parallel
