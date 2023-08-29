@@ -1,5 +1,6 @@
 CC := gcc
-NVCC := /usr/local/cuda-12.2/bin/nvcc
+# NVCC := /usr/local/cuda-12.2/bin/nvcc
+NVCC := nvcc
 BIN_FOLDER := bin
 SRC_FOLDER := src
 PARALLEL_FOLDER := parallel
@@ -16,7 +17,7 @@ all: sequential cuda
 
 sequential:
 	@mkdir -p $(BIN_FOLDER)
-	$(CC)  $(SRC_FOLDER)/$(SRC-SEQ) $(SRC_FOLDER)/parser.c $(SRC_FOLDER)/sequential.c
+	$(CC)  $(SRC_FOLDER)/$(SRC-SEQ) $(SRC_FOLDER)/sequential.c
 	@mv a.out $(BIN_FOLDER)/$(NN-SEQ)
 
 parallel:
