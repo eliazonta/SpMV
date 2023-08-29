@@ -21,7 +21,7 @@ sequential:
 
 parallel:
 	@mkdir -p $(BIN_FOLDER)
-	$(NVCC) $(SRC_FOLDER)/$(PARALLEL_FOLDER)/$(SRC-CUDA) $(SRC_FOLDER)/parser.c $(SRC_FOLDER)/$(PARALLEL_FOLDER)/parallel.cu
+	$(NVCC) $(SRC_FOLDER)/$(PARALLEL_FOLDER)/$(SRC-CUDA) $(SRC_FOLDER)/$(PARALLEL_FOLDER)/parallel.cu
 	@mv a.out $(BIN_FOLDER)/$(NN-CUDA)
 	
 clean:
