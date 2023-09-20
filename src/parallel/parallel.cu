@@ -1,8 +1,8 @@
-#include "../../include/parallel.h"
+#include "../../include/parallel.cuh"
 // Parallel SpMV 
 __global__ 
 void spmv_csr(const int *row_ptr, const int *col_ind, const float *values, const int num_rows, const float *x, float *y) {
-    // Grid-stride loop for dot product
+    // grid stride loop for dot product
     for (int i = blockIdx.x * blockDim.x + threadIdx.x; i < num_rows; i += blockDim.x * gridDim.x) {
         float dp = 0;
         const int row_start = row_ptr[i];
