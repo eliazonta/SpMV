@@ -3,8 +3,8 @@
 #include <string.h>
 
 #include "../../include/parser.h"
-#include "../../include/parallel.h"
-#include "../../include/utils.h"
+#include "../../include/parallel.cuh"
+#include "../../include/utils.cuh"
 
 
 int main(int argc, const char * argv[]) {
@@ -66,22 +66,30 @@ int main(int argc, const char * argv[]) {
     }
     
     // Allocate on device
-    int *d_row_ptr, *d_col_ind;
-    float *d_values, *d_x, *d_y;
-    cudaMalloc((void**)&d_row_ptr, (num_rows + 1) * sizeof(int));
-    cudaMalloc((void**)&d_col_ind, num_vals * sizeof(int));
-    cudaMalloc((void**)&d_values, num_vals * sizeof(float));
-    cudaMalloc((void**)&d_x, num_rows * sizeof(float));
-    cudaMalloc((void**)&d_y, num_rows * sizeof(float));
+    int *d_row_ptr = malloc_device<int>(num_rows + 1);
+    int *d_col_ind = malloc_device<int>(num_vals);
+
+    float *d_values = malloc_device<float>(num_vals);
+    float *d_x = malloc_device<float>(num_rows);
+    float *d_y = malloc_device<float>(num_rows);
+
+    // cudaMalloc((void**)&d_row_ptr, (num_rows + 1) * sizeof(int));
+    // cudaMalloc((void**)&d_col_ind, num_vals * sizeof(int));
+    // cudaMalloc((void**)&d_values, num_vals * sizeof(float));
+    // cudaMalloc((void**)&d_x, num_rows * sizeof(float));
+    // cudaMalloc((void**)&d_y, num_rows * sizeof(float));
     
     // Get number of SMs
     cudaDeviceGetAttribute(&numSMs, cudaDevAttrMultiProcessorCount, 0);
     
     // Copy from host to device
     auto s = get_time();
-    cudaMemcpy(d_row_ptr, row_ptr, (num_rows + 1) * sizeof(int), cudaMemcpyHostToDevice);
-    cudaMemcpy(d_col_ind, col_ind, num_vals * sizeof(int), cudaMemcpyHostToDevice);
-    cudaMemcpy(d_values, values, num_vals * sizeof(float), cudaMemcpyHostToDevice);
+    copy_to_device(d_row_ptr, row_ptr, (num_rows + 1) * sizeof(int));
+    copy_to_device(d_col_ind, col_ind, num_vals * sizeof(int));
+    copy_to_device(d_values, values, num_vals * sizeof(float));
+    // cudaMemcpy(d_row_ptr, row_ptr, (num_rows + 1) * sizeof(int), cudaMemcpyHostToDevice);
+    // cudaMemcpy(d_col_ind, col_ind, num_vals * sizeof(int), cudaMemcpyHostToDevice);
+    // cudaMemcpy(d_values, values, num_vals * sizeof(float), cudaMemcpyHostToDevice);
     auto time_H2D = get_time() - s;
 
     // Time the iterations
@@ -93,14 +101,17 @@ int main(int argc, const char * argv[]) {
     cudaEventRecord(start);
     
     for (int i = 0; i < num_repeat; i++) {
-        cudaMemcpy(d_x, x, num_rows * sizeof(float), cudaMemcpyHostToDevice);
-        cudaMemcpy(d_y, y, num_rows * sizeof(float), cudaMemcpyHostToDevice);
+        copy_to_device(d_x, x, num_rows * sizeof(float));
+        copy_to_device(d_y, y, num_rows * sizeof(float));
+        // cudaMemcpy(d_x, x, num_rows * sizeof(float), cudaMemcpyHostToDevice);
+        // cudaMemcpy(d_y, y, num_rows * sizeof(float), cudaMemcpyHostToDevice);
         
         // Call kernel function
         spmv_csr<<<32 * numSMs, num_thread>>>(d_row_ptr, d_col_ind, d_values, num_rows, d_x, d_y);
         
         // Copy the result to x_{i} at the end of each iteration, and use it in iteration x_{i+1}
-        cudaMemcpy(y, d_y, num_rows * sizeof(float), cudaMemcpyDeviceToHost);
+        copy_to_host(y, d_y, num_rows * sizeof(float));
+        // cudaMemcpy(y, d_y, num_rows * sizeof(float), cudaMemcpyDeviceToHost);
         for (int i = 0; i < num_rows; i++) {
             x[i] = y[i];
             y[i] = 0.0;

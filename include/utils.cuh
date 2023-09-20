@@ -1,5 +1,6 @@
+#ifndef __utils__
+#define __utils__
 #pragma once 
-
 #include <chrono>
 #include <cmath>
 #include <mutex>
@@ -120,3 +121,5 @@ static  double get_time()
     static auto start_time = clock_type::now();
     return duration_type(clock_type::now() - start_time).count();
 }
+
+#endif
