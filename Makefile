@@ -26,4 +26,4 @@ parallel:
 	@mv a.out $(BIN_FOLDER)/$(NN-CUDA)
 	
 clean:
-	rm -rf $(BIN_FOLDER) prova 
+	rm -rf $(BIN_FOLDER)  
