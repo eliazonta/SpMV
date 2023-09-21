@@ -1,5 +1,8 @@
 # SpMV 
-![Build](https://github.com/eliazonta/SpMV/actions/workflows/c-cpp.yml/badge.svg)
+![Sequential build](https://github.com/eliazonta/SpMV/actions/workflows/sequential.yml/badge.svg)
+
+
+![CUDA build](https://github.com/eliazonta/SpMV/actions/workflows/parallel.yml/badge.svg)
 
 Sequential and parallel (GPU based) implementation of a Sparse Matrix Vector Multiplication using (Compressed Sparse Row (CSR) matrix format.
 

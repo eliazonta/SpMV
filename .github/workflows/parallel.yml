@@ -1,4 +1,4 @@
-name: NVCC
+name: CUDA Binary build
 
 on:
   push:
