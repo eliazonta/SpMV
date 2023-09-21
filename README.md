@@ -20,6 +20,6 @@ make parallel
 ```
 
 ### TODO LIST
-- [ ] ⚠️ **IMPORTANT** more tests on my GPU (working on my Mac M1 rn🥲)
+- [X] ⚠️ **IMPORTANT** more tests on my GPU (working on my Mac M1 rn🥲)
 - [ ] more performances evaluation 
 - [ ] CUDA workflow

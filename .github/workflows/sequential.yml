@@ -1,0 +1,20 @@
+name: C Binary build
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build-sequential:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: make clean 
+      run: make clean
+
+    - name: make sequential
+      run: make sequential

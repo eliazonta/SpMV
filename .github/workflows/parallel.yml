@@ -1,0 +1,23 @@
+name: NVCC
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  
+jobs:
+  build-parallel:
+  
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - uses: Jimver/cuda-toolkit@v0.2.11
+        id: cuda-toolkit
+        with:
+          cuda: '12.1.0'  
+      - name: cuda-build 
+        shell: |
+          bash  
+      - run: nvcc -V
