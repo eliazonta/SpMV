@@ -2,28 +2,28 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctime>
+#include <iostream>
 
 #include "../include/parser.h"
 #include "../include/sequential.h"
+
+#define NUM_REPEAT 100
+#define PRINT_MODE 2
 
 int main(int argc, char **argv) {
     fprintf(stdout, "============================\n");
     fprintf(stdout, "****** Sequential SpMV *****\n");
     fprintf(stdout, "----------------------------\n");
-    fprintf(stdout, "**** Author: Zonta Elia ****\n");
+    fprintf(stdout, "*********** TEST ***********\n");
     fprintf(stdout, "----------------------------\n");
     fprintf(stdout, "============================\n");
-    if (argc != 4) {
-        fprintf(stdout, "Usage : \n <./bin/SpVM-SEQ> <num of iterations> <print mode [1 default, 2 view data info]> <file path>\n");
-        exit(-1);
-    }
     
     int *row_ptr, *col_ind, num_rows, num_cols, num_vals;
     float *values, elapsed_time;
     
-    int num_repeat = atoi(argv[1]);
-    int print_mode = atoi(argv[2]);
-    const char *filename = argv[3];
+    int num_repeat = NUM_REPEAT;
+    int print_mode = PRINT_MODE;
+    const char *filename = 'data/arc130.mtx';
     
     read_matrix(&row_ptr, &col_ind, &values, filename, &num_rows, &num_cols, &num_vals);
     
