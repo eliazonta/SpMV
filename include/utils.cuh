@@ -9,14 +9,14 @@
 ///////////////////////////////////////////////////////////////
 // CUDA error check
 //////////////////////////////////////////////////////////////
-static void cuda_check_status(cudaError_t status)
+#define cuda_error_check(ans) { gpuAssert((ans), __FILE__, __LINE__); }
+inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort=true)
 {
-    if (status != cudaSuccess)
-    {
-        std::cerr << "error : CUDA API call : " 
-            << cudaGetErrorString(status) << std::endl;
-        exit(1);
-    } 
+   if (code != cudaSuccess) 
+   {
+      fprintf(stderr,"GPUassert: %s %s %d\n", cudaGetErrorString(code), file, line);
+      if (abort) exit(code);
+   }
 }
 
 //////////////////////////////////////////////////////////////
@@ -35,8 +35,7 @@ template <typename T>
 T* malloc_managed(size_t n, T value = T())
 {
     T* p;
-    auto status = cudaMallocManaged(&p, n * sizeof(T));
-    cuda_check_status(status);
+    cuda_error_check(cudaMallocManaged(&p, n * sizeof(T)));
     std::fill(p, p + n, value);
     return p;
 }
@@ -45,7 +44,7 @@ template <typename T>
 T* malloc_pinned(size_t n, T value = T())
 {
     T* p = nullptr;
-    cudaHostAlloc((void**)&p, n * sizeof(T), 0);
+    cuda_error_check(((void**)&p, n * sizeof(T), 0));
     std::fill(p, p + n, value);
     return p;
 }
@@ -57,27 +56,26 @@ T* malloc_pinned(size_t n, T value = T())
 template <typename T>
 void copy_to_device(T* from, T* to, size_t n)
 {
-    cuda_check_status(cudaMemcpy(to, from, n * sizeof(T), cudaMemcpyHostToDevice));
+    cuda_error_check(cudaMemcpy(to, from, n * sizeof(T), cudaMemcpyHostToDevice));
 }
 
 template <typename T>
 void copy_to_host(T* from, T* to, size_t n)
 {
-    cuda_check_status(cudaMemcpy(to, from, n * sizeof(T), cudaMemcpyDeviceToHost));
+    cuda_error_check(cudaMemcpy(to, from, n * sizeof(T), cudaMemcpyDeviceToHost));
 }
 
 template <typename T>
 void copy_to_device_async(const T* from, T* to, size_t n, cudaStream_t stream = NULL)
 {
-    auto status = cudaMemcpyAsync(to, from, n * sizeof(T), cudaMemcpyHostToDevice, stream);
-    cuda_check_status(status);
+    cuda_error_check(cudaMemcpyAsync(to, from, n * sizeof(T), cudaMemcpyHostToDevice, stream));
+
 }
 
 template <typename T>
 void copy_to_host_async(const T* from, T* to, size_t n, cudaStream_t stream = NULL)
 {
-    auto status = cudaMemcpyAsync(to, from, n * sizeof(T), cudaMemcpyDeviceToHost, stream);
-    cuda_check_status(status);
+    cuda_error_check(cudaMemcpyAsync(to, from, n * sizeof(T), cudaMemcpyDeviceToHost, stream));
 }
 
 ///////////////////////////////////////////////////////////////////
