@@ -1,4 +1,4 @@
-name: C Binary build
+name: Build (C)
 
 on:
   push:
